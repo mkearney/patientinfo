@@ -20,7 +20,14 @@ scrape_patient_forum_page <- function(url) {
 scrape_patient_forum_pages <- function(urls) {
   data <- vector("list", length(urls))
   for ( i in seq_along(urls)) {
-    data[[i]] <- scrape_patient_forum_page(urls[i])
+    data[[i]] <- tryCatch(
+      scrape_patient_forum_page(urls[i]),
+      error = function(e) NULL
+    )
+    if (is.null(data[[i]])) {
+      warning("Returned NULL, breaking loop...", call. = FALSE)
+      break
+    }
   }
   data
 }
